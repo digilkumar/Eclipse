@@ -19,7 +19,8 @@ public class BearDaoImpl implements BearDao{
 			ps.setString(2, bear.getName());
 			ps.setString(3, bear.getType());
 			ps.executeUpdate();
-			DbUtil.closeUtil(conn, ps);
+			DbUtil.closeUtil(conn);
+			DbUtil.closeUtil(ps);
 		}
 		return true;
 	}

@@ -15,8 +15,12 @@ public class DbUtil {
 		
 	}
 	
-	public static void closeUtil(Connection conn, PreparedStatement ps) throws SQLException {
+	public static void closeUtil(Connection conn) throws SQLException {
 		conn.close();
+		
+	}
+	public static void closeUtil(PreparedStatement ps) throws SQLException {
+		
 		ps.close();
 	}
 }
