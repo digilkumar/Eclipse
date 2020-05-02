@@ -59,7 +59,7 @@ function populateNotes(notes){
 	console.log(notes);
 	var notesdiv = $("#notesdiv");
 	for(i=0;i<Object.keys(notes).length;i++){
-		notesdiv.append('<div class="col-md-4" id="'+notes[i].noteAgn+'"><div class="card mb-4 shadow-sm"><div class="card-body"><p class="card-text">'+notes[i].note+'<div class="d-flex justify-content-between align-items-center"><div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary" id="d'+notes[i].noteAgn+'" onclick="deleteNote(this.id)">Delete</button><button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></div><small class="text-muted">9 mins</small></div></div></div></div>');
+		notesdiv.append('<div class="col-md-4" id="'+notes[i].noteAgn+'"><div class="card mb-4 shadow-sm"><div class="card-body"><p class="card-text">'+notes[i].note+'<div class="d-flex justify-content-between align-items-center"><div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary" id="d'+notes[i].noteAgn+'" onclick="deleteNote(this.id)">Delete</button><button type="button" class="btn btn-sm btn-outline-secondary" id="e'+notes[i].noteAgn+'" onclick="editNote(this.id)">Edit</button></div><small class="text-muted">9 mins</small></div></div></div></div>');
 	}
 }
 
@@ -107,7 +107,7 @@ function updateAddNote(note,data){
 		   $('#exampleModal').modal('toggle');
 		});
 	var notesdiv = $("#notesdiv");
-	notesdiv.append('<div class="col-md-4" id="'+data.agn+'"><div class="card mb-4 shadow-sm"><div class="card-body"><p class="card-text">'+note.note+'<div class="d-flex justify-content-between align-items-center"><div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary" id="d'+data.agn+'" onclick="deleteNote(this.id)">Delete</button><button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></div><small class="text-muted">9 mins</small></div></div></div></div>');
+	notesdiv.append('<div class="col-md-4" id="'+data.agn+'"><div class="card mb-4 shadow-sm"><div class="card-body"><p class="card-text">'+note.note+'<div class="d-flex justify-content-between align-items-center"><div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary" id="d'+data.agn+'" onclick="deleteNote(this.id)">Delete</button><button type="button" class="btn btn-sm btn-outline-secondary" id="e'+data.agn+'" onclick="editNote(this.id)">Edit</button></div><small class="text-muted">9 mins</small></div></div></div></div>');
 	
 	$("#addNoteDialogButton").removeAttr("disabled");
 	$("#textAreaToAddNote").val("");
@@ -137,4 +137,56 @@ var username = getCookie("username");
 function updateDeleteNote(agn){
 	
 	$("#"+agn).remove();
+}
+
+function editNote(editNoteEle){
+	console.log(editNoteEle);
+	var editAgn = editNoteEle.substring(1);
+	var editNote = $("#"+editAgn).children().children().children().eq(0).text();
+	prepareEditModal(editAgn,editNote);
+	
+	
+}
+
+function prepareEditModal(eAgn,eNote){
+	
+	console.log(eAgn,eNote);
+	var editModal = $("#exampleModalEdit");
+	editModal.children().children().children().eq(2).children().eq(1).attr("id","u"+eAgn);
+	editModal.children().children().children().eq(1).children().children().eq(1).val(eNote);
+	$('#exampleModalEdit').modal('toggle');
+}
+
+function updateNoteOnClick(updateNoteEle){
+	
+	var note = $("#textAreaToUpdateNote").val();
+	var noteagn = updateNoteEle.substring(1);
+	
+	var username = getCookie("username");
+		
+		var session_id = getCookie("session_id");
+		console.log(noteagn);
+		var updateNoteRequest = {"noteAgn":noteagn,"note":note,"author":username,"sessionId":session_id,"username":username};
+		
+		var agn = $.ajax({
+			'type':'post',
+			'url':'http://localhost:8080/nm/resources/notes/update',
+			'contentType':'application/json',
+			'data':JSON.stringify(updateNoteRequest),
+			'dataType':'json',
+			'success':afterUpdate(noteagn,note)
+			
+			});
+}
+
+function afterUpdate(agn,note){
+
+		   $('#exampleModalEdit').modal('toggle');
+		  
+		
+	
+	$("#"+agn).children().children().children().eq(0).text(note);
+	
+	
+	$("#textAreaToUpdateNote").val("");
 }

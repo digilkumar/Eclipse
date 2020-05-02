@@ -142,9 +142,11 @@ public class NotesManagerDaoImpl implements NotesManagerDao {
 		if(s.validateSession(item.getUsername(),item.getSessionId())) {
 		
 		Connection conn = DbUtil.getConnection();
-		PreparedStatement ps = conn.prepareStatement("update notes set note=? where note_agn=?");
+		PreparedStatement ps = conn.prepareStatement("update notes set note=? where note_agn=? and author=?");
+		System.out.println(item.getNote()+item.getAuthor()+item.getNoteAgn());
 		ps.setString(1, item.getNote());
 		ps.setInt(2, item.getNoteAgn());
+		ps.setString(3, item.getAuthor());
 		ps.executeUpdate();
 		DbUtil.closeUtil(conn, ps);
 		re.setStatus("success");
