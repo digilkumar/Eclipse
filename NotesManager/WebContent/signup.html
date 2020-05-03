@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<title>Notes Manager Login</title>
+
+<style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      .container-login100 {
+  width: 100%;  
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  
+  position: relative;
+  z-index: 1;
+}
+
+.container-login100::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: #005bea;
+  background: -webkit-linear-gradient(bottom, #f2f2f2, #f2f2f2);
+  background: -o-linear-gradient(bottom, #f2f2f2, #f2f2f2);
+  background: -moz-linear-gradient(bottom, #f2f2f2, #f2f2f2);
+  background: linear-gradient(bottom, #f2f2f2, #f2f2f2);
+  opacity: 0.8;
+}
+    </style>
+    <link href="assets/signin.css" rel="stylesheet">
+   
+   
+   <script>
+   function signUp(){
+	   
+	   var username = $("#signupEmail").val();
+	   var password = $("#signupPassword").val();
+	   var confPassword = $("#signupPasswordConfirm").val();
+	   
+	   console.log(username);
+	   console.log(password);
+	   console.log(confPassword);
+	   
+	   if(password===confPassword){
+		   console.log("here");
+		   var createRequest = {"username":username,"password":password};
+		   console.log(createRequest);
+		   $.ajax({
+				'type':'post',
+				'url':'http://localhost:8080/nm/resources/notes/createuser',
+				'contentType':'application/json',
+				'data':JSON.stringify(createRequest),
+				'dataType':'json',
+				'success':function(data){
+					
+					updateUserCreation(data);
+				}
+				
+				});
+		   
+	   }else{
+		   
+		   $("#nomatch").text("Passwords dont match!");
+		   $("#nomatch").hide();
+		   $("#nomatch").fadeIn(700);
+		   
+	   }
+	   
+	  
+	 
+   }
+   
+   function updateUserCreation(data){
+	   console.log(data);
+	   if(data.userStatus==="exists"){
+		   $("#nomatch").text("User already exist!");
+		   $("#nomatch").hide();
+		   $("#nomatch").fadeIn(700);
+	   }
+	   else if(data.userStatus==="created"){
+		   $("#maindiv").empty();
+		   $("#maindiv").append('<h2>User Created! Please sign in <a href="/nm/main">here</a></h2>');
+	   }
+   }
+   
+   </script>
+    
+</head>
+
+
+<body class="text-center">
+<div class="container-login100" id="maindiv" style="background-image: url('assets/images/background.jpg');">
+
+
+<form class="form-signin"  onsubmit="event.preventDefault(); signUp();">
+  <img class="mb-4" src="assets/images/notes_icon.png" alt="" width="72" height="72">
+  <h1>Notes Manager</h1>
+  <h3 class="h3 mb-3 font-weight-normal">Sign up below</h3>
+  
+  <div>
+  <label for="inputEmail" class="sr-only">Email address</label>
+  <input type="text" name="username" id="signupEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+  </div>
+  <p></p>
+  <div>
+  <label for="inputPassword" class="sr-only">Password</label>
+  <input type="password" name="password" id="signupPassword" class="form-control" placeholder="Password" required="">
+  </div>
+   <div>
+  <label for="inputPassword" class="sr-only">Confirm Password</label>
+  <input type="password" name="password" id="signupPasswordConfirm" class="form-control" placeholder="Confirm Password" required="">
+  </div>
+  <p id="nomatch" style="display: none;"></p>
+  <button class="btn btn-lg btn-primary btn-block" id="signupbutton" type="submit">Sign up</button>
+  
+  <div class="checkbox mb-3">
+  	<p>Have an account? <a href="/nm/main">Sign in</a></p>
+  </div>
+  
+  <p class="mt-5 mb-3 text-muted">© 2017-2019</p>
+</form>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
