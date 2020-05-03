@@ -1,6 +1,8 @@
 package com.notes.servlets;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,8 @@ public class MainServlet extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("inside main");
+		
+		
 		
 		Map<String,String> hm = new HashMap<String,String>();
 		

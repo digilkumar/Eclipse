@@ -1,27 +1,35 @@
 package com.notes.test;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.SQLException;
+
+import com.notes.dao.NotesManagerDao;
+import com.notes.dao.impl.NotesManagerDaoImpl;
+import com.notes.entity.UserItem;
 
 public class Test {
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+	
 
-	public static void main(String[] args) {
-	      //method 1
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        System.out.println(timestamp);
+//	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+//		Class.forName("org.h2.Driver");
+//		Connection conn = DriverManager.getConnection("jdbc:h2:./WebContent/assets/test", "sa", "");
+//		
+//		PreparedStatement ps = conn.prepareStatement("select * from users");
+//		ResultSet rs = ps.executeQuery();
+//		while(rs.next()) {
+//			System.out.println(rs.getString(2));
+//		}
+//	}
 
-        //method 2 - via Date
-        Date date = new Date();
-        System.out.println(new Timestamp(date.getTime()));
-
-        //return number of milliseconds since January 1, 1970, 00:00:00 GMT
-        System.out.println(timestamp.getTime());
-
-        //format timestamp
-        System.out.println(sdf.format(timestamp));
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+//		UserDao u = new UserDaoImpl();
+//		System.out.println(u.validateUser("digilkumar", "test1"));
+		UserItem userItem = new UserItem();
+		userItem.setPassword("sumesh");
+		userItem.setUsername("digilkumar1");
 		
+		NotesManagerDao nm = new NotesManagerDaoImpl();
+		System.out.println(nm.createUser(userItem));
 	}
-
+	
+	
 }

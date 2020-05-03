@@ -93,6 +93,7 @@ var username = getCookie("username");
 		'data':JSON.stringify(addNoteRequest),
 		'dataType':'json',
 		'success':function(data){
+			
 			updateAddNote(addNoteRequest,data);
 		}
 		

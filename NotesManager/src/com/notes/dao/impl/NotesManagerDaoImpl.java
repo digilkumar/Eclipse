@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -15,7 +17,9 @@ import javax.ws.rs.core.MediaType;
 
 import com.notes.dao.NotesManagerDao;
 import com.notes.entity.NoteItem;
+import com.notes.entity.ResponseCreateUser;
 import com.notes.entity.ResponseEntity;
+import com.notes.entity.UserItem;
 import com.notes.session.dao.SessionDao;
 import com.notes.session.dao.impl.SessionDaoImpl;
 import com.notes.util.DbUtil;
@@ -88,6 +92,10 @@ public class NotesManagerDaoImpl implements NotesManagerDao {
 			n1.setNoteAgn(rs.getInt("note_agn"));
 			n1.setTimeStamp(rs.getTimestamp("timestamp"));
 			ar.add(n1);
+			System.out.println(n1.getTimeStamp());
+			
+			String formattedDate = new SimpleDateFormat("yyyyMMddHHmm").format(n1.getTimeStamp());
+			System.out.println(formattedDate);
 		}
 		
 		
@@ -159,5 +167,42 @@ public class NotesManagerDaoImpl implements NotesManagerDao {
 		}
 	}
 
-
+	@Override
+	@POST
+	@Path("/createuser")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ResponseCreateUser createUser(UserItem userItem) throws ClassNotFoundException, SQLException {
+		ResponseCreateUser r = new ResponseCreateUser();
+		String username = userItem.getUsername();
+		String password = userItem.getPassword();
+		String encodedPass = new String(Base64.getEncoder().encode(password.getBytes()));
+		int count=0;
+		Connection conn1 = DbUtil.getConnection();
+		PreparedStatement ps1 = conn1.prepareStatement("select count(*) from users where username=?");
+		
+		ps1.setString(1, username);
+		ResultSet rs1 = ps1.executeQuery();
+		while(rs1.next()) {
+			count = rs1.getInt(1);
+		}
+		if(count==1) {
+			r.setUserStatus("exists");
+			return r;
+		}else {
+			Connection conn2 = DbUtil.getConnection();
+			PreparedStatement ps2 = conn2.prepareStatement("insert into users (username,password_str,created_date) values (?,?,current_timestamp)");
+			ps2.setString(1, username);
+			ps2.setString(2, encodedPass);
+			
+			ps2.executeUpdate();
+			r.setUserStatus("created");
+			return r;
+		}
+		
+		
+	}
+	
+	
+	
 }

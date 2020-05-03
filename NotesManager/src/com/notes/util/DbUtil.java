@@ -10,7 +10,8 @@ public class DbUtil {
 
 	public static Connection getConnection() throws ClassNotFoundException, SQLException {
 		Class.forName("org.h2.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		Connection conn = DriverManager.getConnection("jdbc:h2:./assets/test", "sa", "");
+	
 		return conn;
 	}
 	
